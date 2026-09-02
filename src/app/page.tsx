@@ -65,12 +65,16 @@ import {
 } from "./_components/interactive-demos";
 
 const brandScale = [
-  { name: "brand-500", value: "var(--brand-500)" },
-  { name: "brand-600", value: "var(--brand-600)" },
-  { name: "brand-700", value: "var(--brand-700)" },
-  { name: "brand-800", value: "var(--brand-800)" },
-  { name: "brand-900", value: "var(--brand-900)" },
-  { name: "rose-50", value: "var(--rose-50)" },
+  { name: "50", value: "var(--brand-50)" },
+  { name: "100", value: "var(--brand-100)" },
+  { name: "200", value: "var(--brand-200)" },
+  { name: "300", value: "var(--brand-300)" },
+  { name: "400", value: "var(--brand-400)" },
+  { name: "500", value: "var(--brand-500)" },
+  { name: "600 · anchor", value: "var(--brand-600)" },
+  { name: "700 · CTA", value: "var(--brand-700)" },
+  { name: "800 · hover", value: "var(--brand-800)" },
+  { name: "900 · pressed", value: "var(--brand-900)" },
 ];
 
 const prices = [
@@ -152,6 +156,28 @@ export default function Home() {
               </div>
               <div className="bg-card text-caption flex size-24 items-center justify-center rounded-xl border shadow-e4">
                 e4
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <p className="text-overline text-muted-foreground uppercase">
+              Semantic roles
+            </p>
+            <div className="flex flex-col gap-1.5">
+              <p className="text-body-m">
+                <span className="text-text-link underline">Inline link</span> and{" "}
+                <span className="text-text-error">inline validation error</span>{" "}
+                both use brand/700 — the banner error below is a different token.
+              </p>
+              <div className="border-border-error bg-danger-subtle text-body-s rounded-lg border p-3">
+                Field-level error: border and text use brand/700.
+              </div>
+              <div className="text-danger bg-danger-subtle text-body-s rounded-lg p-3">
+                Feedback banner: this red is #EF4444, not the brand red.
+              </div>
+              <div className="bg-surface-muted text-text-disabled text-body-s rounded-lg p-3">
+                Disabled fill and disabled text.
               </div>
             </div>
           </div>
