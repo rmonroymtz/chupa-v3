@@ -1,0 +1,360 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Chupaprecios Design System v3
+   Canonical source: chupaprecios-design-system/designSystem/tokens.js
+   (emitted there as --ds-* vars; ported here onto the shadcn token names so the
+   primitives in src/components/ui restyle without forking their code).
+
+   Red boundary rule — from the DS review playbook, section 3:
+     #FF0000  logo ONLY, never in the interactive palette
+     #BE424B  interactive CTA fill (brand/700, 5.16:1 AA on white)
+     #D84752  brand anchor (sale prices, focus ring, accents) (brand/600)
+   These never mix.
+
+   :root and .dark hold the tokens. @theme inline only bridges them to Tailwind.
+--------------------------------------------------------------------------- */
+
+@theme inline {
+  /* --- shadcn semantic colors --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* --- Brand scale · 1:1 with tokens.js `primary` --- */
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-anchor: var(--brand-anchor);
+  --color-brand-logo: var(--brand-logo);
+
+  /* --- Semantic roles shadcn has no slot for --- */
+  --color-text-disabled: var(--text-disabled);
+  --color-text-link: var(--text-link);
+  --color-text-error: var(--text-error);
+  --color-border-strong: var(--border-strong);
+  --color-border-error: var(--border-error);
+  --color-border-success: var(--border-success);
+  --color-surface-muted: var(--surface-muted);
+  --color-interactive-hover: var(--interactive-hover);
+  --color-interactive-pressed: var(--interactive-pressed);
+  --color-interactive-disabled: var(--interactive-disabled);
+  --color-overlay: var(--overlay);
+
+  /* --- Feedback (tokens.js color.feedback) --- */
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-danger: var(--destructive);
+  --color-danger-subtle: var(--destructive-subtle);
+
+  /* --- E-commerce (V3 manual section C) --- */
+  --color-price-sale: var(--price-sale);
+  --color-price-regular: var(--price-regular);
+  --color-price-compare: var(--price-compare);
+  --color-badge-new: var(--badge-new);
+  --color-badge-sale: var(--badge-sale);
+  --color-badge-featured: var(--badge-featured);
+  --color-badge-soldout: var(--badge-soldout);
+  --color-badge-shipping: var(--badge-shipping);
+  --color-badge-last-units: var(--badge-last-units);
+  --color-trust-secure: var(--trust-secure);
+  --color-trust-verified: var(--trust-verified);
+  --color-trust-warranty: var(--trust-warranty);
+  --color-rating-filled: var(--rating-filled);
+  --color-rating-empty: var(--rating-empty);
+
+  /* --- Typography (tokens.js font + text) --- */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-roboto-flex), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Desktop values. The DS reduces Display XL to 40 and H1 to 28 on mobile. */
+  --text-display-xl: 56px;
+  --text-display-xl--line-height: 64px;
+  --text-display-xl--font-weight: 700;
+  --text-display-l: 48px;
+  --text-display-l--line-height: 56px;
+  --text-display-l--font-weight: 700;
+  --text-display-m: 40px;
+  --text-display-m--line-height: 48px;
+  --text-display-m--font-weight: 700;
+  --text-h1: 32px;
+  --text-h1--line-height: 40px;
+  --text-h1--font-weight: 700;
+  --text-h2: 24px;
+  --text-h2--line-height: 32px;
+  --text-h2--font-weight: 700;
+  --text-h3: 20px;
+  --text-h3--line-height: 28px;
+  --text-h3--font-weight: 600;
+  --text-h4: 18px;
+  --text-h4--line-height: 26px;
+  --text-h4--font-weight: 600;
+  --text-body-l: 16px;
+  --text-body-l--line-height: 24px;
+  --text-body-m: 14px;
+  --text-body-m--line-height: 20px;
+  --text-body-s: 13px;
+  --text-body-s--line-height: 18px;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-label--font-weight: 500;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-overline: 11px;
+  --text-overline--line-height: 16px;
+  --text-overline--font-weight: 500;
+
+  /*
+    Radius. The DS scale is xs 6 / sm 8 / md 12 / lg 16 / pill, assigned by
+    component role. Tailwind's key names sit one step below the DS names:
+      DS xs 6  -> rounded-sm     DS md 12 -> rounded-lg
+      DS sm 8  -> rounded-md     DS lg 16 -> rounded-xl
+    `rounded-pill` is exposed under its DS name because buttons, chips and the
+    search bar are the one role the scale names directly.
+  */
+  --radius-sm: 6px; /* DS xs · product badges */
+  --radius-md: 8px; /* DS sm · skeletons, loading bars */
+  --radius-lg: 12px; /* DS md · inputs, selects, images */
+  --radius-xl: 16px; /* DS lg · cards, modals, drawers */
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+  --radius-pill: 9999px; /* DS pill · buttons, chips, search */
+
+  /* --- Elevation (tokens.js elevation 1-4) --- */
+  --shadow-e1: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-e2: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-e3: 0 8px 24px rgba(0, 0, 0, 0.14);
+  --shadow-e4: 0 16px 40px rgba(0, 0, 0, 0.18);
+
+  /*
+    Layout (tokens.js `layout`). The DS grid is 1200px of CONTENT with side
+    margins of 16 / 24 / 32. The canonical grid.module.css gets there with
+    box-sizing: content-box, which Tailwind's preflight does not use — under
+    border-box the same max-width would eat the padding and leave 1136px of
+    content. So `--container-page` caps the OUTER box at content + the 32px
+    desktop margins, which lands the content on 1200px exactly.
+  */
+  --container-content: 1200px; /* grid content width */
+  --container-page: 1264px; /* 1200 + 2 x 32 side margin */
+  --container-outer: 1280px; /* board's outer cap */
+}
+
+:root {
+  /* Brand scale — tokens.js `primary`, same step numbers */
+  --brand-50: #fff1f2;
+  --brand-100: #ffe4e6;
+  --brand-200: #fecdd3;
+  --brand-300: #fda4af;
+  --brand-400: #fb7185;
+  --brand-500: #f43f5e;
+  --brand-600: #d84752; /* brand anchor */
+  --brand-700: #be424b; /* interactive primary · 5.16:1 AA */
+  --brand-800: #9f1239; /* interactive hover */
+  --brand-900: #881337; /* interactive pressed */
+
+  --brand-anchor: var(--brand-600);
+  --brand-logo: #ff0000; /* logo ONLY — never for UI, see red boundary rule */
+
+  /* Neutral scale — tokens.js `neutral` */
+  --neutral-0: #ffffff;
+  --neutral-50: #f8f8f8;
+  --neutral-100: #f0f0f0;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #c7c7c7;
+  --neutral-350: #bbbbbb;
+  --neutral-400: #aaaaaa;
+  --neutral-550: #6e6e6e;
+  --neutral-800: #3b3b3b;
+  --neutral-950: #1a1a1a;
+
+  /* shadcn semantic mapping — light */
+  --background: var(--neutral-0); /* surface.base */
+  --foreground: var(--neutral-800); /* text.primary */
+  --card: var(--neutral-50); /* surface.subtle · cards, panels, modals */
+  --card-foreground: var(--neutral-800);
+  --popover: var(--neutral-50); /* surface.subtle */
+  --popover-foreground: var(--neutral-800);
+  --primary: var(--brand-700); /* interactive.primary */
+  --primary-foreground: var(--neutral-0); /* text.onPrimary · never inverts */
+  --secondary: var(--neutral-50);
+  --secondary-foreground: var(--neutral-800);
+  --muted: var(--neutral-50);
+  --muted-foreground: var(--neutral-550); /* text.secondary */
+  --accent: var(--brand-50); /* surface.brandSubtle · interactive.selection */
+  --accent-foreground: var(--brand-700);
+  --destructive: #ef4444; /* feedback.error — the banner red */
+  --border: var(--neutral-200); /* border.default */
+  --input: var(--neutral-200);
+  --ring: var(--brand-anchor); /* border.focus / focus.ring */
+  --radius: 12px;
+
+  /* Semantic roles shadcn does not model */
+  --text-disabled: var(--neutral-300); /* text.disabled */
+  --text-link: var(--brand-700); /* text.link */
+  --text-error: var(--brand-700); /* text.error — inline validation, NOT the banner */
+  --border-strong: var(--neutral-800);
+  --border-error: var(--brand-700);
+  --border-success: #10b981;
+  --surface-muted: var(--neutral-100); /* surface.muted · disabled fills */
+  --interactive-hover: var(--brand-800);
+  --interactive-pressed: var(--brand-900);
+  --interactive-disabled: var(--neutral-350);
+  --overlay: rgba(26, 26, 26, 0.6); /* surface.overlay · modal & drawer scrim */
+
+  /* Feedback — each state needs color + background + text.primary on top */
+  --success: #10b981;
+  --success-subtle: #ecfdf5;
+  --warning: #f5af02;
+  --warning-subtle: #fffbeb;
+  --info: #0064d2;
+  --info-subtle: #eff6ff;
+  --destructive-subtle: #fef2f2;
+
+  /* E-commerce */
+  --price-sale: var(--brand-anchor);
+  --price-regular: var(--neutral-800);
+  --price-compare: var(--neutral-400);
+  --badge-new: #10b981;
+  --badge-sale: var(--brand-anchor);
+  --badge-featured: #fdaa40;
+  --badge-soldout: var(--neutral-400);
+  --badge-shipping: #0c7bb2;
+  --badge-last-units: #f96304;
+  --trust-secure: #10b981;
+  --trust-verified: #0c7bb2;
+  --trust-warranty: #fdaa40;
+  --rating-filled: #fdaa40;
+  --rating-empty: var(--neutral-200);
+
+  /* Charts — brand-led sequence */
+  --chart-1: var(--brand-700);
+  --chart-2: #0c7bb2;
+  --chart-3: #10b981;
+  --chart-4: #fdaa40;
+  --chart-5: var(--neutral-400);
+
+  /* Sidebar */
+  --sidebar: var(--neutral-50);
+  --sidebar-foreground: var(--neutral-800);
+  --sidebar-primary: var(--brand-700);
+  --sidebar-primary-foreground: var(--neutral-0);
+  --sidebar-accent: var(--brand-50);
+  --sidebar-accent-foreground: var(--brand-700);
+  --sidebar-border: var(--neutral-200);
+  --sidebar-ring: var(--brand-anchor);
+}
+
+/*
+  Dark mode. tokens.js defines no dark tier; the override map lives in the DS's
+  own DarkMode story, which overrides surface, text and border only — the
+  interactive and brand-anchor reds stay put so the red boundary rule holds in
+  both themes. Values marked "derived" have no counterpart in either source.
+*/
+.dark {
+  --background: var(--neutral-950); /* surface.base */
+  --foreground: var(--neutral-0); /* text.primary */
+  --card: #2a2031; /* surface.subtle */
+  --card-foreground: var(--neutral-0);
+  --popover: #2a2031; /* surface.subtle */
+  --popover-foreground: var(--neutral-0);
+  --primary: var(--brand-700); /* unchanged across themes */
+  --primary-foreground: var(--neutral-0); /* text.onPrimary is fixed */
+  --secondary: #2a2031;
+  --secondary-foreground: var(--neutral-0);
+  --muted: #2a2031;
+  --muted-foreground: var(--neutral-400); /* text.secondary */
+  --accent: var(--neutral-800); /* surface.muted */
+  --accent-foreground: var(--neutral-0);
+  --destructive: #f87171; /* derived — lifted for contrast on #1A1A1A */
+  --border: rgba(255, 255, 255, 0.24); /* border.default */
+  --input: rgba(255, 255, 255, 0.24);
+  --ring: var(--brand-anchor);
+
+  --text-disabled: var(--neutral-550); /* derived */
+  --border-strong: rgba(255, 255, 255, 0.4); /* derived */
+  --surface-muted: var(--neutral-800); /* surface.muted */
+
+  --success-subtle: #06281d; /* derived */
+  --warning-subtle: #2b2008; /* derived */
+  --info-subtle: #0a1c2e; /* derived */
+  --destructive-subtle: #2b1113; /* derived */
+
+  --price-regular: var(--neutral-0);
+  --price-compare: var(--neutral-550);
+  --rating-empty: rgba(255, 255, 255, 0.24);
+
+  --sidebar: var(--neutral-950);
+  --sidebar-foreground: var(--neutral-0);
+  --sidebar-primary: var(--brand-700);
+  --sidebar-primary-foreground: var(--neutral-0);
+  --sidebar-accent: #2a2031;
+  --sidebar-accent-foreground: var(--neutral-0);
+  --sidebar-border: rgba(255, 255, 255, 0.24);
+  --sidebar-ring: var(--brand-anchor);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring;
+  }
+  /* WCAG 2.1 · 2.4.7 — the DS mandates a 2px solid ring with a 2px offset. */
+  *:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1,
+  h2 {
+    @apply font-display;
+  }
+}
