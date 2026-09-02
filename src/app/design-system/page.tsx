@@ -5,7 +5,7 @@ import {
   TriangleAlertIcon,
 } from "lucide-react";
 
-import { Container } from "@/components/common/container";
+import { Container } from "@/components/layout/container";
 import { EmptyState } from "@/components/common/empty-state";
 import { PageHeader } from "@/components/common/page-header";
 import { ThemeToggle } from "@/components/common/theme-toggle";
@@ -56,6 +56,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Icon, iconNames } from "@/components/icons";
+import {
+  Logo,
+  paymentLogos,
+  shippingLogos,
+  storeLogos,
+  type LogoName,
+} from "@/components/logos";
 import { Section } from "./_components/section";
 import {
   DisclosureDemo,
@@ -335,6 +343,58 @@ export default function Home() {
 
       <Section title="Tabs and Accordion" description="Disclosure patterns.">
         <DisclosureDemo />
+      </Section>
+
+      <Section
+        title="Logos"
+        description="Third-party marks keep their own brand colours — no recolouring, no distortion. The grey silhouette in the footer is a footer-only adaptation."
+      >
+        <div className="flex flex-col gap-6">
+          {(
+            [
+              ["Stores", storeLogos],
+              ["Payment", paymentLogos],
+              ["Shipping", shippingLogos],
+            ] as const
+          ).map(([label, group]) => (
+            <div key={label} className="flex flex-col gap-3">
+              <p className="text-overline text-muted-foreground uppercase">
+                {label}
+              </p>
+              <div className="flex flex-wrap items-center gap-6">
+                {Object.keys(group).map((name) => (
+                  <div key={name} className="flex flex-col items-center gap-2">
+                    <div className="bg-card flex h-16 w-32 items-center justify-center rounded-lg border px-3">
+                      <Logo name={name as LogoName} height={24} />
+                    </div>
+                    <span className="text-caption text-muted-foreground">
+                      {name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Iconography"
+        description="The design system roster: 41 icons from the V3 board plus 7 on-demand extras, at 20px and 1.5 stroke."
+      >
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
+          {iconNames.map((name) => (
+            <div
+              key={name}
+              className="flex flex-col items-center gap-2 rounded-lg border p-3"
+            >
+              <Icon name={name} />
+              <span className="text-caption text-muted-foreground text-center break-all">
+                {name}
+              </span>
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section title="Table" description="Static data rendered on the server.">

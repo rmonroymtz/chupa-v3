@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
-import { Container } from "@/components/common/container";
+import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
