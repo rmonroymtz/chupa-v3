@@ -53,6 +53,25 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
+  /*
+    Neutral scale · 1:1 with tokens.js `neutral`. This deliberately replaces
+    Tailwind's default neutral palette so `bg-neutral-800` is the DS #3B3B3B,
+    not Tailwind's #262626 — no component can reach a grey outside the system.
+  */
+  --color-neutral-0: var(--neutral-0);
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-350: var(--neutral-350);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-550: var(--neutral-550);
+  --color-neutral-600: initial;
+  --color-neutral-700: initial;
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: initial;
+  --color-neutral-950: var(--neutral-950);
+
   /* --- Brand scale · 1:1 with tokens.js `primary` --- */
   --color-brand-50: var(--brand-50);
   --color-brand-100: var(--brand-100);
