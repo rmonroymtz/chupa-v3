@@ -1,0 +1,295 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Chupaprecios Design System v3
+   Source: https://ch-ds-standalone.vercel.app/system-design-v3.html
+   (Figma "System Design", node 344-1888, token audit of 2026-08-19)
+
+   :root and .dark hold the raw design tokens.
+   @theme inline only bridges them to Tailwind / shadcn utility names.
+--------------------------------------------------------------------------- */
+
+@theme inline {
+  /* --- shadcn semantic colors --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* --- Brand scale (DS "Primary scale") --- */
+  --color-brand-50: var(--rose-50);
+  --color-brand-100: var(--rose-100);
+  --color-brand-200: var(--rose-200);
+  --color-brand-300: var(--rose-300);
+  --color-brand-400: var(--rose-400);
+  --color-brand-500: var(--rose-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+
+  /* --- Feedback (DS section F) --- */
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-danger: var(--destructive);
+  --color-danger-subtle: var(--destructive-subtle);
+
+  /* --- E-commerce (DS section C) --- */
+  --color-price-sale: var(--price-sale);
+  --color-price-compare: var(--price-compare);
+  --color-badge-new: var(--badge-new);
+  --color-badge-sale: var(--badge-sale);
+  --color-badge-featured: var(--badge-featured);
+  --color-badge-soldout: var(--badge-soldout);
+  --color-badge-shipping: var(--badge-shipping);
+  --color-badge-last-units: var(--badge-last-units);
+  --color-trust-secure: var(--trust-secure);
+  --color-trust-verified: var(--trust-verified);
+  --color-trust-warranty: var(--trust-warranty);
+  --color-rating-filled: var(--rating-filled);
+  --color-rating-empty: var(--rating-empty);
+
+  /* --- Typography (DS section 05/06) --- */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-roboto-flex), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --text-display-xl: 56px;
+  --text-display-xl--line-height: 64px;
+  --text-display-xl--font-weight: 700;
+  --text-display-l: 48px;
+  --text-display-l--line-height: 56px;
+  --text-display-l--font-weight: 700;
+  --text-display-m: 40px;
+  --text-display-m--line-height: 48px;
+  --text-display-m--font-weight: 700;
+  --text-h1: 32px;
+  --text-h1--line-height: 40px;
+  --text-h1--font-weight: 700;
+  --text-h2: 24px;
+  --text-h2--line-height: 32px;
+  --text-h2--font-weight: 700;
+  --text-h3: 20px;
+  --text-h3--line-height: 28px;
+  --text-h3--font-weight: 600;
+  --text-h4: 18px;
+  --text-h4--line-height: 26px;
+  --text-h4--font-weight: 600;
+  --text-body-l: 16px;
+  --text-body-l--line-height: 24px;
+  --text-body-m: 14px;
+  --text-body-m--line-height: 20px;
+  --text-body-s: 13px;
+  --text-body-s--line-height: 18px;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-label--font-weight: 500;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-overline: 11px;
+  --text-overline--line-height: 16px;
+  --text-overline--font-weight: 500;
+
+  /* --- Radius (DS board "Radios · Bordes · Elevación") --- */
+  --radius-sm: 6px; /* product badges */
+  --radius-md: 8px; /* skeletons, progress bars */
+  --radius-lg: 12px; /* inputs, selects, images */
+  --radius-xl: 16px; /* cards, modals, drawers */
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+
+  /* --- Elevation (DS section E) --- */
+  --shadow-e1: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-e2: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-e3: 0 8px 24px rgba(0, 0, 0, 0.14);
+  --shadow-e4: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+:root {
+  /* Brand scale — 600 is the interactive anchor */
+  --brand-500: #d84752; /* primary/600 · marketing, sale prices, focus ring */
+  --brand-600: #be424b; /* primary/700 · button fill, 5.16:1 AA */
+  --brand-700: #9f1239; /* primary/800 · hover */
+  --brand-800: #881337; /* primary/900 · pressed */
+  --brand-900: #6b0f2c;
+
+  --rose-50: #fff1f2;
+  --rose-100: #ffe4e6;
+  --rose-200: #fecdd3;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --rose-500: #f43f5e;
+
+  /* Neutrals */
+  --gray-950: #1a1a1a;
+  --gray-800: #3b3b3b;
+  --gray-600: #666666;
+  --gray-550: #6e6e6e;
+  --gray-400: #aaaaaa;
+  --gray-350: #bbbbbb;
+  --gray-300: #c7c7c7;
+  --gray-200: #e5e7eb;
+  --gray-100: #f0f0f0;
+  --gray-50: #f8f8f8;
+
+  /* shadcn semantic mapping — light */
+  --background: #ffffff; /* bg/page */
+  --foreground: var(--gray-800); /* text/primary */
+  --card: #ffffff; /* bg/surface-raised */
+  --card-foreground: var(--gray-800);
+  --popover: #ffffff;
+  --popover-foreground: var(--gray-800);
+  --primary: var(--brand-600); /* interactive/primary */
+  --primary-foreground: #ffffff; /* text/on-primary · never inverts */
+  --secondary: var(--gray-50); /* bg/surface */
+  --secondary-foreground: var(--gray-800);
+  --muted: var(--gray-50);
+  --muted-foreground: var(--gray-550); /* text/secondary */
+  --accent: var(--rose-50); /* bg/brand-subtle · interactive/selection */
+  --accent-foreground: var(--brand-600);
+  --destructive: #ef4444; /* feedback error */
+  --border: var(--gray-200); /* border/default */
+  --input: var(--gray-200);
+  --ring: var(--brand-500); /* interactive/focus-ring */
+  --radius: 12px;
+
+  /* Feedback */
+  --success: #10b981;
+  --success-subtle: #ecfdf5;
+  --warning: #f5af02;
+  --warning-subtle: #fffbeb;
+  --info: #0064d2;
+  --info-subtle: #eff6ff;
+  --destructive-subtle: #fef2f2;
+
+  /* E-commerce */
+  --price-sale: var(--brand-500);
+  --price-compare: var(--gray-400);
+  --badge-new: #10b981;
+  --badge-sale: var(--brand-500);
+  --badge-featured: #fdaa40;
+  --badge-soldout: var(--gray-400);
+  --badge-shipping: #0c7bb2;
+  --badge-last-units: #f96304;
+  --trust-secure: #10b981;
+  --trust-verified: #0c7bb2;
+  --trust-warranty: #fdaa40;
+  --rating-filled: #fdaa40;
+  --rating-empty: var(--gray-200);
+
+  /* Charts — brand-led sequence */
+  --chart-1: var(--brand-600);
+  --chart-2: #0c7bb2;
+  --chart-3: #10b981;
+  --chart-4: #fdaa40;
+  --chart-5: var(--gray-400);
+
+  /* Sidebar */
+  --sidebar: var(--gray-50);
+  --sidebar-foreground: var(--gray-800);
+  --sidebar-primary: var(--brand-600);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--rose-50);
+  --sidebar-accent-foreground: var(--brand-600);
+  --sidebar-border: var(--gray-200);
+  --sidebar-ring: var(--brand-500);
+}
+
+/*
+  Dark mode. The DS only documents four dark components (button, input, badge,
+  card) on a #1A1A1A board: surface #1A1A1A, border #666666, body text #AAAAAA,
+  titles #FFFFFF, primary unchanged. Values marked "derived" fill the gaps that
+  the source does not specify.
+*/
+.dark {
+  --background: var(--gray-950);
+  --foreground: #ffffff; /* text/inverse */
+  --card: var(--gray-950); /* DS dark card = board surface + border */
+  --card-foreground: #ffffff;
+  --popover: #232323; /* derived */
+  --popover-foreground: #ffffff;
+  --primary: var(--brand-600); /* does not invert */
+  --primary-foreground: #ffffff; /* text/on-primary is fixed */
+  --secondary: #2a2a2a; /* derived */
+  --secondary-foreground: #ffffff;
+  --muted: #2a2a2a; /* derived */
+  --muted-foreground: var(--gray-400);
+  --accent: #3b3b3b; /* derived */
+  --accent-foreground: #ffffff;
+  --destructive: #f87171; /* derived — lifted for contrast on #1A1A1A */
+  --border: var(--gray-600);
+  --input: var(--gray-600);
+  --ring: var(--brand-500);
+
+  --success: #34d399; /* derived */
+  --success-subtle: #06281d; /* derived */
+  --warning: #fdaa40; /* derived */
+  --warning-subtle: #2b2008; /* derived */
+  --info: #4da3f0; /* derived */
+  --info-subtle: #0a1c2e; /* derived */
+  --destructive-subtle: #2b1113; /* derived */
+
+  --price-compare: var(--gray-600);
+  --rating-empty: var(--gray-600);
+
+  --sidebar: var(--gray-950);
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: var(--brand-600);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2a2a2a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: var(--gray-600);
+  --sidebar-ring: var(--brand-500);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1,
+  h2 {
+    @apply font-display;
+  }
+}
