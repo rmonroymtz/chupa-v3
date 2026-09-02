@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored reference copy of the design system: not project source.
+    "chupaprecios-design-system/**",
   ]),
 ]);
 
