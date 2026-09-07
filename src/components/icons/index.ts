@@ -1,5 +1,6 @@
 export { Icon } from "./icon";
 export {
+  additionalIcons,
   extraIcons,
   icons,
   iconNames,
@@ -7,10 +8,11 @@ export {
   type IconName,
 } from "./registry";
 export {
+  brandIconLabels,
   brandIcons,
   FacebookIcon,
   InstagramIcon,
-  TwitterIcon,
+  TwitterXIcon,
   YoutubeIcon,
   type BrandIconName,
 } from "./brand";

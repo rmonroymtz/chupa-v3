@@ -37,7 +37,12 @@ export const paymentLogos = {
     width: 482.51,
     height: 382.51,
   },
-  amex: { label: "American Express", src: "/logos/amex.svg", width: 58, height: 40 },
+  amex: {
+    label: "American Express",
+    src: "/logos/amex.svg",
+    width: 58,
+    height: 40,
+  },
   paypal: { label: "PayPal", src: "/logos/paypal.svg", width: 800, height: 800 },
   "mercado-pago": {
     label: "Mercado Pago",
@@ -45,7 +50,12 @@ export const paymentLogos = {
     width: 111,
     height: 30,
   },
-  oxxo: { label: "OXXO", src: "/logos/oxxo.svg", width: 885.83, height: 448.9 },
+  oxxo: {
+    label: "OXXO",
+    src: "/logos/oxxo.svg",
+    width: 885.83,
+    height: 448.9,
+  },
   spei: { label: "SPEI", src: "/logos/spei.svg", width: 2500, height: 833 },
   kueski: { label: "Kueski Pay", src: "/logos/kueski.svg", width: 300, height: 60 },
 } satisfies Record<string, LogoEntry>;
@@ -60,6 +70,17 @@ export const shippingLogos = {
 } satisfies Record<string, LogoEntry>;
 
 export const brandLogos = {
+  /*
+    Own brand, added by the v4 revision: "Chupa" in the identity red #FF0000,
+    "Choice" in black. A real asset, not a placeholder — and the black half
+    means it needs a light surface.
+  */
+  chupachoice: {
+    label: "ChupaChoice",
+    src: "/brand/chupachoice.svg",
+    width: 101,
+    height: 12,
+  },
   chupaprecios: {
     label: "Chupaprecios",
     src: "/brand/chupaprecios.svg",

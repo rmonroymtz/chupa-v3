@@ -1,18 +1,26 @@
 import {
+  ActivityIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
   AwardIcon,
   BellIcon,
+  BriefcaseIcon,
+  CameraIcon,
   CheckIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  ChevronLeftIcon,
   CircleCheckIcon,
   CircleXIcon,
+  ClockIcon,
+  CoffeeIcon,
+  CpuIcon,
   CreditCardIcon,
   DollarSignIcon,
   DropletIcon,
   EyeIcon,
   FileTextIcon,
+  FilterIcon,
   FolderIcon,
   Grid3x3Icon,
   HeartIcon,
@@ -20,6 +28,7 @@ import {
   InfoIcon,
   KeyIcon,
   LayersIcon,
+  Link2Icon,
   ListIcon,
   LoaderIcon,
   LockIcon,
@@ -27,25 +36,34 @@ import {
   LogOutIcon,
   type LucideIcon,
   MapPinIcon,
+  MessageCircleIcon,
   MenuIcon,
   MinusIcon,
   MousePointerIcon,
+  NavigationIcon,
   PackageIcon,
+  PhoneCallIcon,
   PlusIcon,
   ReceiptIcon,
   RefreshCwIcon,
+  RulerIcon,
   SearchIcon,
   SendIcon,
   SettingsIcon,
   ShareIcon,
+  SunIcon,
   ShieldIcon,
   ShoppingBagIcon,
   ShoppingCartIcon,
   StarIcon,
+  TagIcon,
+  ThermometerIcon,
+  TrashIcon,
   TriangleAlertIcon,
   TruckIcon,
   UserIcon,
   UserPlusIcon,
+  WrenchIcon,
   XIcon,
   ZapIcon,
 } from "lucide-react";
@@ -59,10 +77,13 @@ import {
   lucide exports have since been renamed (check-circle -> CircleCheck), which is
   exactly what this table absorbs.
 
-  `v3Icons` is the roster from the standalone "Iconografía" board. `extraIcons`
-  holds glyphs the storefront needs that were not on that board — the design
-  system keeps the same split so regenerating the board set never clobbers them.
-  Add new icons to `extraIcons`, never inline into a component.
+  Three buckets, matching how the boards are split:
+    v3Icons          board 02, the 41-glyph catalogue
+    additionalIcons  board 04, the 23 added by the v4 revision of 2026-09
+    extraIcons       on-demand glyphs that are on no board
+  Keeping them apart means a board revision can be re-derived without
+  clobbering the on-demand ones. Add new icons to `extraIcons`, never inline
+  into a component.
 */
 export const v3Icons = {
   home: HomeIcon,
@@ -108,17 +129,47 @@ export const v3Icons = {
   truck: TruckIcon,
 } satisfies Record<string, LucideIcon>;
 
-export const extraIcons = {
+/*
+  Board 04 "Iconos Adicionales" (23), added by the v4 revision of 2026-09 for
+  Home, PLP and the B2B / My Account flows. `tool` is the one name with no
+  lucide equivalent left: feather's tool became Wrench.
+*/
+export const additionalIcons = {
+  tool: WrenchIcon,
   package: PackageIcon,
-  "dollar-sign": DollarSignIcon,
-  list: ListIcon,
+  cpu: CpuIcon,
+  coffee: CoffeeIcon,
+  briefcase: BriefcaseIcon,
+  sun: SunIcon,
+  navigation: NavigationIcon,
+  trash: TrashIcon,
+  activity: ActivityIcon,
+  tag: TagIcon,
+  clock: ClockIcon,
+  "phone-call": PhoneCallIcon,
+  "link-2": Link2Icon,
+  "message-circle": MessageCircleIcon,
   settings: SettingsIcon,
   "log-out": LogOutIcon,
+  "dollar-sign": DollarSignIcon,
+  list: ListIcon,
+  filter: FilterIcon,
+  "chevron-left": ChevronLeftIcon,
+  camera: CameraIcon,
+  thermometer: ThermometerIcon,
+  ruler: RulerIcon,
+} satisfies Record<string, LucideIcon>;
+
+/*
+  On-demand glyphs the storefront needs that are on no board. Add here, never
+  inline into a component, so the next board revision can absorb them.
+*/
+export const extraIcons = {
   minus: MinusIcon,
   plus: PlusIcon,
 } satisfies Record<string, LucideIcon>;
 
-export const icons = { ...v3Icons, ...extraIcons };
+export const icons = { ...v3Icons, ...additionalIcons, ...extraIcons };
 
 export type IconName = keyof typeof icons;
 

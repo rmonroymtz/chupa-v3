@@ -1,6 +1,10 @@
 import * as React from "react";
 
-import { brandIcons, type BrandIconName } from "@/components/icons";
+import {
+  brandIconLabels,
+  brandIcons,
+  type BrandIconName,
+} from "@/components/icons";
 import { Logo, type PaymentLogoName } from "@/components/logos";
 
 const helpLinks = [
@@ -11,10 +15,10 @@ const helpLinks = [
 ];
 
 const socialLinks: BrandIconName[] = [
-  "Facebook",
-  "Instagram",
-  "Youtube",
-  "Twitter",
+  "facebook",
+  "instagram",
+  "youtube",
+  "twitter-x",
 ];
 
 const aboutLinks = [
@@ -77,10 +81,11 @@ export function Footer() {
                 <a
                   key={name}
                   href="#"
-                  aria-label={name}
-                  className="flex size-[34px] items-center justify-center rounded-full bg-white text-neutral-800 no-underline"
+                  aria-label={brandIconLabels[name]}
+                  /* Board 03: 44x44 white circle, monochrome cutout glyph. */
+                  className="flex size-11 items-center justify-center rounded-full bg-white text-neutral-800 no-underline"
                 >
-                  <BrandGlyph />
+                  <BrandGlyph width={20} height={20} />
                 </a>
               );
             })}
@@ -89,7 +94,10 @@ export function Footer() {
 
         <div className="flex flex-col gap-6">
           <LinkList title="Centro de ayuda" items={helpLinks} />
-          <LinkList title="Redes sociales" items={socialLinks} />
+          <LinkList
+            title="Redes sociales"
+            items={socialLinks.map((name) => brandIconLabels[name])}
+          />
         </div>
 
         <div className="flex flex-col gap-6">

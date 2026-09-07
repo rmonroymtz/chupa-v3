@@ -58,6 +58,7 @@ import {
 } from "@/components/ui/table";
 import { Icon, iconNames } from "@/components/icons";
 import {
+  brandLogos,
   Logo,
   paymentLogos,
   shippingLogos,
@@ -352,6 +353,7 @@ export default function Home() {
         <div className="flex flex-col gap-6">
           {(
             [
+              ["Brand", brandLogos],
               ["Stores", storeLogos],
               ["Payment", paymentLogos],
               ["Shipping", shippingLogos],
@@ -364,7 +366,14 @@ export default function Home() {
               <div className="flex flex-wrap items-center gap-6">
                 {Object.keys(group).map((name) => (
                   <div key={name} className="flex flex-col items-center gap-2">
-                    <div className="bg-card flex h-16 w-32 items-center justify-center rounded-lg border px-3">
+                    <div
+                      /* The light wordmark is white, so it needs a dark tile. */
+                      className={`flex h-16 w-32 items-center justify-center rounded-lg border px-3 ${
+                        name === "chupaprecios-light"
+                          ? "bg-neutral-800"
+                          : "bg-card"
+                      }`}
+                    >
                       <Logo name={name as LogoName} height={24} />
                     </div>
                     <span className="text-caption text-muted-foreground">
@@ -380,7 +389,7 @@ export default function Home() {
 
       <Section
         title="Iconography"
-        description="The design system roster: 41 icons from the V3 board plus 7 on-demand extras, at 20px and 1.5 stroke."
+        description="The design system roster: 41 icons from board 02, the 23 board 04 added in the v4 revision, and 2 on-demand extras — all at 20px and 1.5 stroke."
       >
         <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
           {iconNames.map((name) => (
