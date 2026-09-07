@@ -19,6 +19,13 @@ export type LogoEntry = {
   src: string;
   width: number;
   height: number;
+  /*
+    Variant with the full-bleed background removed. Only the marks that draw
+    themselves as light shapes over a filled background need one: the footer's
+    grey silhouette filter keeps just the alpha channel, so without it they
+    flatten into a solid block.
+  */
+  monoSrc?: string;
 };
 
 export const storeLogos = {
@@ -40,6 +47,7 @@ export const paymentLogos = {
   amex: {
     label: "American Express",
     src: "/logos/amex.svg",
+    monoSrc: "/logos/amex-mono.svg",
     width: 58,
     height: 40,
   },
@@ -47,12 +55,14 @@ export const paymentLogos = {
   "mercado-pago": {
     label: "Mercado Pago",
     src: "/logos/mercado-pago.svg",
+    monoSrc: "/logos/mercado-pago-mono.svg",
     width: 111,
     height: 30,
   },
   oxxo: {
     label: "OXXO",
     src: "/logos/oxxo.svg",
+    monoSrc: "/logos/oxxo-mono.svg",
     width: 885.83,
     height: 448.9,
   },

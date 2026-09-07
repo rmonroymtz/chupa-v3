@@ -14,6 +14,11 @@ type LogoProps = Omit<
   name: LogoName;
   /** Rendered height in px; width follows the asset's own proportions. */
   height?: number;
+  /*
+    Use the background-free variant when the asset has one. Pair it with a
+    silhouette filter; on its own it just drops the mark's backdrop.
+  */
+  mono?: boolean;
   /** Overrides the brand's own spelling. Pass "" for a decorative mark. */
   alt?: string;
 };
@@ -21,17 +26,19 @@ type LogoProps = Omit<
 export function Logo({
   name,
   height = 32,
+  mono = false,
   alt,
   className,
   ...props
 }: LogoProps) {
   const logo = logos[name];
   const width = Math.round((logo.width / logo.height) * height);
+  const src = mono && "monoSrc" in logo ? logo.monoSrc : logo.src;
 
   return (
     <img
       data-slot="logo"
-      src={logo.src}
+      src={src}
       alt={alt ?? logo.label}
       width={width}
       height={height}

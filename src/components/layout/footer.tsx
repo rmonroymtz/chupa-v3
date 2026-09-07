@@ -189,6 +189,11 @@ export function Footer() {
               Footer-only adaptation: the marks are unified into one light-grey
               silhouette on the dark surface. Everywhere else they keep their
               brand colours.
+
+              The filter keeps only the alpha channel, so `mono` swaps in the
+              background-free variant for Amex, OXXO and Mercado Pago — those
+              three draw their mark as light shapes over a filled background,
+              and with the backdrop in place they flatten into a solid block.
             */}
             <div className="mt-1 flex flex-wrap items-center gap-3">
               {paymentMethods.map((name) => (
@@ -196,6 +201,7 @@ export function Footer() {
                   key={name}
                   name={name}
                   height={22}
+                  mono
                   className="max-w-[46px] brightness-0 invert-[0.72]"
                 />
               ))}
