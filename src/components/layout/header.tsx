@@ -6,7 +6,11 @@ import * as React from "react";
 import { Icon, type IconName } from "@/components/icons";
 import { Logo, type StoreLogoName } from "@/components/logos";
 import { Container } from "@/components/layout/container";
-import { Button } from "@/components/ui/button";
+import {
+  panelAnchor,
+  panelSurface,
+} from "@/components/layout/panel-surface";
+import { PanelGroup, usePanel } from "@/components/ui/panel-group";
 import { cn } from "@/lib/utils";
 
 /*
@@ -22,11 +26,6 @@ import { cn } from "@/lib/utils";
   interactive red (--primary / --text-link). #FF0000 stays inside the wordmark
   asset and never reaches this file.
 */
-
-const mxn = new Intl.NumberFormat("es-MX", {
-  style: "currency",
-  currency: "MXN",
-});
 
 export const defaultCategories = [
   "Electrodomésticos",
@@ -80,38 +79,6 @@ const defaultDrawerLinks = [
   "Mis Cotizaciones",
 ];
 
-export type CartItem = {
-  id: string;
-  title: string;
-  sku: string;
-  price: number;
-  qty: number;
-};
-
-const defaultCart: CartItem[] = [
-  {
-    id: "dck271s2",
-    title: "DEWALT Kit de perforación 20 MAX",
-    sku: "DCK271S2",
-    price: 4278,
-    qty: 1,
-  },
-  {
-    id: "gks55-27",
-    title: 'Bosch Sierra circular 7-1/4"',
-    sku: "GKS55-27",
-    price: 2149.5,
-    qty: 1,
-  },
-  {
-    id: "06-9100",
-    title: "3M Careta de soldar 9100 con casco",
-    sku: "06-9100-30SW",
-    price: 9840,
-    qty: 1,
-  },
-];
-
 /*
   Store strip of the v4 revision: ChupaChoice leads and Walmart is not in it,
   which is what separates this list from the canonical `stores` catalogue.
@@ -134,12 +101,6 @@ const storeStrip: StoreMark[] = [
 
 // ── Panels ───────────────────────────────────────────────────────────────────
 
-/*
-  Shared panel surface: DS radius lg (16px) on surface.subtle with elevation 3.
-*/
-const panelSurface =
-  "absolute z-50 rounded-xl border border-neutral-100 bg-card shadow-e3";
-
 function CategoriesDropdown({
   categories,
   onSelect,
@@ -158,7 +119,8 @@ function CategoriesDropdown({
       */
       className={cn(
         panelSurface,
-        "top-[calc(100%+var(--spacing)*3)] left-0 hidden min-w-[420px] grid-flow-col grid-cols-2 grid-rows-6 gap-x-8 gap-y-1 p-4 lg:grid",
+        panelAnchor,
+        "left-0 hidden min-w-[420px] grid-flow-col grid-cols-2 grid-rows-6 gap-x-8 gap-y-1 p-4 lg:grid",
       )}
     >
       {categories.map((category) => (
@@ -193,7 +155,8 @@ function AccountMenu({
       aria-label="Mi cuenta"
       className={cn(
         panelSurface,
-        "top-[calc(100%+var(--spacing)*3)] right-0 w-[300px] overflow-hidden pb-2",
+        panelAnchor,
+        "right-0 w-[300px] overflow-hidden pb-2",
       )}
     >
       <div className="flex items-center gap-3 border-b border-neutral-100 p-4">
@@ -253,104 +216,6 @@ function AccountMenu({
         <Icon name="log-out" size={18} />
         Cerrar sesión
       </button>
-    </div>
-  );
-}
-
-function MiniCart({
-  items,
-  onQty,
-  onEdit,
-  onCheckout,
-}: {
-  items: CartItem[];
-  onQty: (id: string, delta: number) => void;
-  onEdit: () => void;
-  onCheckout: () => void;
-}) {
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const count = items.reduce((sum, i) => sum + i.qty, 0);
-
-  return (
-    <div
-      aria-label="Carrito"
-      className={cn(
-        panelSurface,
-        "top-[calc(100%+var(--spacing)*3)] right-0 w-[360px] p-4",
-      )}
-    >
-      <div className="flex items-baseline justify-between border-b border-neutral-100 pb-3">
-        <span className="text-body-m font-bold tracking-[0.02em] text-foreground">
-          CARRITO ({count} artículos)
-        </span>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="text-body-s cursor-pointer font-semibold text-text-link"
-        >
-          Editar carrito
-        </button>
-      </div>
-
-      <ul className="m-0 list-none p-0">
-        {items.map((item) => (
-          <li
-            key={item.id}
-            className="flex gap-3 border-b border-neutral-100 py-3"
-          >
-            <span
-              aria-hidden="true"
-              className="size-12 shrink-0 rounded-sm bg-surface-muted"
-            />
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <span className="text-body-s leading-[1.3] text-foreground">
-                {item.title}
-              </span>
-              <span className="text-[11px] text-muted-foreground">
-                SKU# {item.sku}
-              </span>
-              <div className="mt-0.5 inline-flex items-center gap-3 self-start rounded-sm border border-border px-2 py-0.5">
-                <button
-                  type="button"
-                  aria-label="Quitar uno"
-                  onClick={() => onQty(item.id, -1)}
-                  className="inline-flex cursor-pointer text-foreground"
-                >
-                  <Icon name="minus" size={14} />
-                </button>
-                <span className="text-body-s min-w-3.5 text-center">
-                  {item.qty}
-                </span>
-                <button
-                  type="button"
-                  aria-label="Agregar uno"
-                  onClick={() => onQty(item.id, 1)}
-                  className="inline-flex cursor-pointer text-foreground"
-                >
-                  <Icon name="plus" size={14} />
-                </button>
-              </div>
-            </div>
-            <span className="text-body-m font-semibold whitespace-nowrap text-foreground">
-              {mxn.format(item.price)}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="text-body-l flex justify-between pt-3 pb-2 font-bold">
-        <span>Subtotal ({count} art.):</span>
-        <span>{mxn.format(subtotal)} MXN</span>
-      </div>
-
-      <p className="text-caption m-0 mb-3 flex items-center justify-center gap-1 text-success">
-        <Icon name="check" size={14} /> Envío gratis en pedidos consolidados
-        aplicado
-      </p>
-
-      <Button size="lg" className="w-full" onClick={onCheckout}>
-        Ir a pagar
-      </Button>
     </div>
   );
 }
@@ -432,64 +297,67 @@ function MobileDrawer({
 
 // ── Header ───────────────────────────────────────────────────────────────────
 
-type Panel = "categories" | "account" | "cart";
+/*
+  The panel keys the header owns. `usePanel` takes any string to stay general,
+  so this alias is what keeps a typo a compile error rather than a panel that
+  silently never opens.
+*/
+type HeaderPanel = "categories" | "account" | "cart";
+
+const useHeaderPanel = (panel: HeaderPanel) => usePanel(panel);
 
 type HeaderProps = {
   categories?: string[];
   user?: HeaderUser;
   accountItems?: AccountItem[];
   drawerLinks?: string[];
-  cartItems?: CartItem[];
   /** Mark drawn inside a pill — the store currently being compared against. */
   activeStore?: StoreMark["name"];
+  /**
+   * The cart, rendered elsewhere and handed in as an element.
+   *
+   * It arrives as a slot rather than an import because this file is a Client
+   * Component: importing the Server Component that loads the cart would drag
+   * the Magento endpoint and the cart cookie into the client bundle, which is
+   * exactly what the split exists to prevent. Already-rendered output, on the
+   * other hand, is just serializable data and crosses the boundary freely.
+   */
+  cartSlot?: React.ReactNode;
   onSearch?: (query: string) => void;
   onSelectCategory?: (category: string) => void;
-  onCheckout?: () => void;
 };
 
-export function Header({
+export function Header(props: HeaderProps) {
+  /*
+    The panel rules (one open at a time, Escape, outside click) come from the
+    generic PanelGroup, which also renders the <header> element so the
+    outside-click boundary cannot drift from the markup. The body is a
+    separate component so it can read that context with hooks.
+  */
+  return (
+    <PanelGroup
+      as="header"
+      data-slot="header"
+      className="relative border-b border-border bg-background text-foreground"
+    >
+      <HeaderBody {...props} />
+    </PanelGroup>
+  );
+}
+
+function HeaderBody({
   categories = defaultCategories,
   user = defaultUser,
   accountItems = defaultAccountItems,
   drawerLinks = defaultDrawerLinks,
-  cartItems = defaultCart,
   activeStore = "amazon",
+  cartSlot,
   onSearch,
   onSelectCategory,
-  onCheckout,
 }: HeaderProps) {
-  const [openPanel, setOpenPanel] = React.useState<Panel | null>(null);
   const [query, setQuery] = React.useState("");
-  const [cart, setCart] = React.useState(cartItems);
-  const rootRef = React.useRef<HTMLElement>(null);
-
-  const cartCount = React.useMemo(
-    () => cart.reduce((sum, i) => sum + i.qty, 0),
-    [cart],
-  );
-
-  const close = React.useCallback(() => setOpenPanel(null), []);
-  const toggle = (panel: Panel) =>
-    setOpenPanel((current) => (current === panel ? null : panel));
-
-  /* One panel at a time: Escape and any click outside the header close it. */
-  React.useEffect(() => {
-    if (!openPanel) return;
-
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
-    };
-    const onDown = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) close();
-    };
-
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("mousedown", onDown);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("mousedown", onDown);
-    };
-  }, [openPanel, close]);
+  const categoriesPanel = useHeaderPanel("categories");
+  const accountPanel = useHeaderPanel("account");
 
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -498,22 +366,11 @@ export function Header({
 
   const selectCategory = (category: string) => {
     onSelectCategory?.(category);
-    close();
+    categoriesPanel.close();
   };
 
-  const changeQty = (id: string, delta: number) =>
-    setCart((items) =>
-      items.map((i) =>
-        i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i,
-      ),
-    );
-
   return (
-    <header
-      ref={rootRef}
-      data-slot="header"
-      className="relative border-b border-border bg-background text-foreground"
-    >
+    <>
       <div className="text-body-s border-b border-neutral-100 px-4 py-2 text-center text-muted-foreground">
         Envío gratis en compra mínima de $1,500* · Promoción válida sólo para
         México
@@ -543,51 +400,51 @@ export function Header({
           at 1024px the wrapper materialises as the first grid cell.
         */}
         <div className="contents lg:col-span-3 lg:flex lg:items-center lg:gap-6">
-        <Link
-          href="/"
-          aria-label="Chupaprecios"
-          className="order-2 flex flex-1 items-center justify-center lg:order-none lg:flex-none lg:justify-start"
-        >
-          {/*
-            The wordmark occupies a fixed 134x24 slot, so the bar reserves the
-            same box whatever the asset does.
-
-            134x24 is not the asset's own ratio — at 394.14x36.61 it is
-            10.77:1, so 134 of width comes to 12.45 of height — and stretching
-            the mark to fill the slot would distort it, which the Brand
-            Identity board forbids. The mark therefore keeps its proportions at
-            12px tall and the slot pads around it.
-
-            The padding is centring rather than a literal px value: `Logo`
-            renders with `w-auto`, so the browser derives the width from the
-            SVG's intrinsic ratio (129.17) instead of the rounded `width`
-            attribute (129). A hard-coded 2.5 each side lands the box on
-            134.17; sizing the slot and centring inside it lands it on 134.
-          */}
-          <span className="flex h-6 w-[134px] items-center justify-center">
-            <Logo name="chupaprecios" height={12} alt="" />
-          </span>
-        </Link>
-
-        <div className="relative order-1 lg:order-none">
-          <button
-            type="button"
-            aria-label="Categorías"
-            aria-haspopup="menu"
-            aria-expanded={openPanel === "categories"}
-            onClick={() => toggle("categories")}
-            className="text-body-l inline-flex cursor-pointer items-center gap-2 font-semibold text-foreground"
+          <Link
+            href="/"
+            aria-label="Chupaprecios"
+            className="order-2 flex flex-1 items-center justify-center lg:order-none lg:flex-none lg:justify-start"
           >
-            <Icon name="menu" size={22} />
-            <span className="hidden lg:inline">Categorías</span>
-          </button>
-          {openPanel === "categories" && (
-            <CategoriesDropdown
-              categories={categories}
-              onSelect={selectCategory}
-            />
-          )}
-        </div>
+            {/*
+              The wordmark occupies a fixed 134x24 slot, so the bar reserves the
+              same box whatever the asset does.
+
+              134x24 is not the asset's own ratio — at 394.14x36.61 it is
+              10.77:1, so 134 of width comes to 12.45 of height — and stretching
+              the mark to fill the slot would distort it, which the Brand
+              Identity board forbids. The mark therefore keeps its proportions at
+              12px tall and the slot pads around it.
+
+              The padding is centring rather than a literal px value: `Logo`
+              renders with `w-auto`, so the browser derives the width from the
+              SVG's intrinsic ratio (129.17) instead of the rounded `width`
+              attribute (129). A hard-coded 2.5 each side lands the box on
+              134.17; sizing the slot and centring inside it lands it on 134.
+            */}
+            <span className="flex h-6 w-[134px] items-center justify-center">
+              <Logo name="chupaprecios" height={12} alt="" />
+            </span>
+          </Link>
+
+          <div className="relative order-1 lg:order-none">
+            <button
+              type="button"
+              aria-label="Categorías"
+              aria-haspopup="menu"
+              aria-expanded={categoriesPanel.isOpen}
+              onClick={categoriesPanel.toggle}
+              className="text-body-l inline-flex cursor-pointer items-center gap-2 font-semibold text-foreground"
+            >
+              <Icon name="menu" size={22} />
+              <span className="hidden lg:inline">Categorías</span>
+            </button>
+            {categoriesPanel.isOpen && (
+              <CategoriesDropdown
+                categories={categories}
+                onSelect={selectCategory}
+              />
+            )}
+          </div>
         </div>
 
         <div
@@ -615,38 +472,26 @@ export function Header({
           <button
             type="button"
             aria-haspopup="menu"
-            aria-expanded={openPanel === "account"}
-            onClick={() => toggle("account")}
+            aria-expanded={accountPanel.isOpen}
+            onClick={accountPanel.toggle}
             className="text-body-m inline-flex cursor-pointer items-center gap-2 text-foreground"
           >
             <Icon name="user" size={20} />
             <span className="hidden lg:inline">Mi cuenta</span>
           </button>
-          <button
-            type="button"
-            aria-haspopup="menu"
-            aria-expanded={openPanel === "cart"}
-            onClick={() => toggle("cart")}
-            className="text-body-m inline-flex cursor-pointer items-center gap-2 text-foreground"
-          >
-            <Icon name="shopping-cart" size={20} />
-            <span className="hidden lg:inline">Carrito ({cartCount})</span>
-          </button>
 
-          {openPanel === "account" && (
+          {/*
+            The slot sits inside this <nav> so the cart panel anchors to the
+            same positioned ancestor the account menu does.
+          */}
+          {cartSlot}
+
+          {accountPanel.isOpen && (
             <AccountMenu
               user={user}
               items={accountItems}
-              onSelect={close}
-              onLogout={close}
-            />
-          )}
-          {openPanel === "cart" && (
-            <MiniCart
-              items={cart}
-              onQty={changeQty}
-              onEdit={close}
-              onCheckout={onCheckout ?? close}
+              onSelect={accountPanel.close}
+              onLogout={accountPanel.close}
             />
           )}
         </nav>
@@ -655,29 +500,29 @@ export function Header({
       {/* Forma board: search is the one input on radius-pill, not radius-lg. */}
       <Container size="shell" className="pb-4 lg:pb-5">
         <form onSubmit={submitSearch} role="search">
-        <label className="flex h-12 w-full items-center gap-3 rounded-pill border border-border bg-muted px-5 focus-within:border-ring focus-within:bg-background">
-          <Icon name="search" size={18} className="shrink-0 text-neutral-400" />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Ingresa ASIN, SKU, Nombre o URL del producto"
-            aria-label="Buscar productos"
-            className="text-body-l flex-1 border-none bg-transparent text-foreground outline-none placeholder:text-neutral-400"
-          />
-        </label>
+          <label className="flex h-12 w-full items-center gap-3 rounded-pill border border-border bg-muted px-5 focus-within:border-ring focus-within:bg-background">
+            <Icon name="search" size={18} className="shrink-0 text-neutral-400" />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Ingresa ASIN, SKU, Nombre o URL del producto"
+              aria-label="Buscar productos"
+              className="text-body-l flex-1 border-none bg-transparent text-foreground outline-none placeholder:text-neutral-400"
+            />
+          </label>
         </form>
       </Container>
 
-      {openPanel === "categories" && (
+      {categoriesPanel.isOpen && (
         <MobileDrawer
           categories={categories}
           accountLinks={drawerLinks}
           onSelect={selectCategory}
-          onLogout={close}
-          onClose={close}
+          onLogout={categoriesPanel.close}
+          onClose={categoriesPanel.close}
         />
       )}
-    </header>
+    </>
   );
 }
