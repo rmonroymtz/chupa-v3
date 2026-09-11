@@ -12,6 +12,11 @@ const containerSizes = {
   sm: "max-w-3xl",
   md: "max-w-5xl",
   lg: "max-w-page",
+  /*
+    The header/footer track: 12 fragments of 90 with 15px gutters, so 1245 of
+    content rather than the board's 1200. See --container-shell in globals.css.
+  */
+  shell: "max-w-shell",
   full: "max-w-none",
 } as const;
 

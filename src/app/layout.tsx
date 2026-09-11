@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist_Mono, Inter, Roboto_Flex } from "next/font/google";
 
+import { CartData, CartMenuSkeleton } from "@/components/cart/cart-data";
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -43,7 +46,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           disableTransitionOnChange
         >
           <TooltipProvider>
-            {children}
+            {/*
+              The cart is rendered here, in a Server Component, and handed to
+              the client header as an element. That is the only way round: the
+              header is a Client Component and cannot import CartData without
+              pulling the Magento endpoint into the browser bundle.
+            */}
+            <Header
+              cartSlot={
+                <Suspense fallback={<CartMenuSkeleton />}>
+                  <CartData />
+                </Suspense>
+              }
+            />
+            <main className="flex-1">{children}</main>
             <Footer />
           </TooltipProvider>
           <Toaster />

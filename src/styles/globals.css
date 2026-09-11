@@ -201,6 +201,20 @@
   --container-content: 1200px; /* grid content width */
   --container-page: 1264px; /* 1200 + 2 x 32 side margin */
   --container-outer: 1280px; /* board's outer cap */
+
+  /*
+    Shell grid — the storefront header/footer track, spelled out by the column
+    metrics rather than by a content cap: 12 fragments of 90px separated by
+    15px gutters, which is 12 x 90 + 11 x 15 = 1245px of content. Adding the
+    32px desktop side margins under border-box gives the 1309px outer cap, and
+    at a 1440 viewport that lands the content on 97.5 .. 1342.5 with each
+    fragment measuring exactly 90px.
+
+    This is wider than --container-content: the 1200px cap is the DS board's
+    figure, while the shell track is the one the storefront composition is
+    drawn on. Page bodies keep using --container-page.
+  */
+  --container-shell: 1309px; /* 1245 content + 2 x 32 side margin */
 }
 
 :root {
