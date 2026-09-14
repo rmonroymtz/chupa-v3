@@ -10,6 +10,8 @@ import type {
   CartResult,
   CartUserError,
   CreateEmptyCartResult,
+  CustomerCartResult,
+  MergeCartsResult,
   UpdateCartItemsResult,
 } from "@/lib/magento/types";
 
@@ -164,6 +166,12 @@ export async function addProductsToCart({
   return cart;
 }
 
+/* The two ways Magento says "you get no cart from this id". See `getCart`. */
+const UNAVAILABLE_CART_CATEGORIES = [
+  "graphql-no-such-entity",
+  "graphql-authorization",
+];
+
 export const CART_QUERY = /* GraphQL */ `
   query Cart($cartId: String!) {
     cart(cart_id: $cartId) {
@@ -176,10 +184,21 @@ export const CART_QUERY = /* GraphQL */ `
 /**
  * Reads a cart by its masked id.
  *
- * Returns null instead of throwing when Magento no longer knows the id — a
- * stale cookie is an everyday occurrence (carts expire, environments get
- * reset) and it must not take the whole page down with it. Every other
- * failure still propagates.
+ * Returns null instead of throwing when the cart is not available to this
+ * caller — a stale cookie is an everyday occurrence and it must not take the
+ * whole page down with it. Two categories mean that, not one:
+ *
+ *   - `graphql-no-such-entity`: Magento no longer knows the id at all. Carts
+ *     expire, environments get reset.
+ *   - `graphql-authorization`: the id is real but belongs to a customer and
+ *     this request carries no token. That is not an edge case — it is
+ *     guaranteed. The customer-token cookie lives an hour (Magento's own
+ *     token lifetime) while the cart cookie lives thirty days, so every
+ *     signed-in shopper crosses this state the moment their token lapses
+ *     with a customer cart id still in hand.
+ *
+ * Both resolve to the same truth for the caller: there is no cart to show.
+ * Every other failure still propagates.
  */
 export async function getCart(
   cartId: string,
@@ -196,9 +215,8 @@ export async function getCart(
   } catch (error) {
     if (
       error instanceof GraphQLResponseError &&
-      error.errors.some(
-        (entry: GraphQLErrorEntry) =>
-          entry.extensions?.category === "graphql-no-such-entity",
+      error.errors.some((entry: GraphQLErrorEntry) =>
+        UNAVAILABLE_CART_CATEGORIES.includes(entry.extensions?.category ?? ""),
       )
     ) {
       return null;
@@ -251,4 +269,78 @@ export async function updateCartItems({
   }
 
   return cart;
+}
+
+export const CUSTOMER_CART_QUERY = /* GraphQL */ `
+  query CustomerCart {
+    customerCart {
+      ...CartFields
+    }
+  }
+  ${CART_FIELDS}
+`;
+
+/**
+ * Reads the signed-in customer's cart.
+ *
+ * The useful property: `customerCart` never returns null — Magento creates
+ * an empty quote for the customer the first time it is asked, the same way
+ * `createEmptyCart` mints one for a guest. That is why this returns `Cart`
+ * rather than `Cart | null`, and why the sign-in path needs no
+ * "create a cart first" branch the way the guest flow does.
+ */
+export async function getCustomerCart(token: string): Promise<Cart> {
+  const data = await magentoFetch<CustomerCartResult>({
+    query: CUSTOMER_CART_QUERY,
+    token,
+  });
+
+  return data.customerCart;
+}
+
+export const MERGE_CARTS_MUTATION = /* GraphQL */ `
+  mutation MergeCarts($sourceCartId: String!, $destinationCartId: String!) {
+    mergeCarts(
+      source_cart_id: $sourceCartId
+      destination_cart_id: $destinationCartId
+    ) {
+      ...CartFields
+    }
+  }
+  ${CART_FIELDS}
+`;
+
+/**
+ * Merges a guest cart into a customer cart. `token` is required, not
+ * optional, unlike every other operation in this file — merging is
+ * inherently an authenticated operation, there is no guest-side equivalent.
+ *
+ * What Magento does to `sourceCartId`: it is consumed. Its items move onto
+ * the destination cart and the source cart is gone afterwards — not emptied,
+ * gone. That is why the caller must repoint its cart cookie at
+ * `destinationCartId` once this resolves, and why a merge can never be
+ * replayed: calling it again with the same source id hits a cart that no
+ * longer exists.
+ *
+ * The quantity rule is a genuine trap: when the same SKU appears in both
+ * carts, Magento SUMS the quantities rather than keeping the larger one. A
+ * shopper who had 2 of something as a guest and 1 of the same SKU as a
+ * customer ends up with 3, not 2.
+ */
+export async function mergeCarts({
+  sourceCartId,
+  destinationCartId,
+  token,
+}: {
+  sourceCartId: string;
+  destinationCartId: string;
+  token: string;
+}): Promise<Cart> {
+  const data = await magentoFetch<MergeCartsResult>({
+    query: MERGE_CARTS_MUTATION,
+    variables: { sourceCartId, destinationCartId },
+    token,
+  });
+
+  return data.mergeCarts;
 }

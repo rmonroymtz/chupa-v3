@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Geist_Mono, Inter, Roboto_Flex } from "next/font/google";
 
+import { AccountData, AccountMenuSkeleton } from "@/components/account/account-data";
+import { DrawerAccountLinks } from "@/components/account/drawer-account-links";
 import { CartData, CartMenuSkeleton } from "@/components/cart/cart-data";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -47,12 +49,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           <TooltipProvider>
             {/*
-              The cart is rendered here, in a Server Component, and handed to
-              the client header as an element. That is the only way round: the
-              header is a Client Component and cannot import CartData without
-              pulling the Magento endpoint into the browser bundle.
+              The cart and the account trigger are both rendered here, in
+              Server Components, and handed to the client header as elements.
+              That is the only way round: the header is a Client Component
+              and cannot import CartData or AccountData without pulling the
+              Magento endpoint and the session cookie into the browser
+              bundle.
             */}
             <Header
+              accountSlot={
+                <Suspense fallback={<AccountMenuSkeleton />}>
+                  <AccountData />
+                </Suspense>
+              }
+              drawerAccountSlot={
+                <Suspense fallback={null}>
+                  <DrawerAccountLinks />
+                </Suspense>
+              }
               cartSlot={
                 <Suspense fallback={<CartMenuSkeleton />}>
                   <CartData />

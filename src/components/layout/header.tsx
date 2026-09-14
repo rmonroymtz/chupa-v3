@@ -3,7 +3,7 @@
 import Link from "next/link";
 import * as React from "react";
 
-import { Icon, type IconName } from "@/components/icons";
+import { Icon } from "@/components/icons";
 import { Logo, type StoreLogoName } from "@/components/logos";
 import { Container } from "@/components/layout/container";
 import {
@@ -39,44 +39,6 @@ export const defaultCategories = [
   "Jardín",
   "Videojuegos",
   "Industria",
-];
-
-export type HeaderUser = { name: string; company: string; initials: string };
-
-const defaultUser: HeaderUser = {
-  name: "Carlos M.",
-  company: "Empresa ABC S.A. de C.V.",
-  initials: "CM",
-};
-
-export type AccountItem = {
-  icon: IconName;
-  label: string;
-  value?: string;
-  tone?: "brand" | "success";
-};
-
-const defaultAccountItems: AccountItem[] = [
-  { icon: "package", label: "Órdenes y Facturación" },
-  { icon: "file-text", label: "Cotizaciones activas", value: "4", tone: "brand" },
-  {
-    icon: "dollar-sign",
-    label: "Límite de crédito",
-    value: "$32,900.00",
-    tone: "success",
-  },
-  { icon: "map-pin", label: "Direcciones de envío" },
-  { icon: "credit-card", label: "Tarjetas de pago" },
-  { icon: "list", label: "Mis Listas de compra" },
-  { icon: "settings", label: "Perfil de usuario" },
-];
-
-const defaultDrawerLinks = [
-  "Mi Cuenta",
-  "Mis Pedidos",
-  "Mis Direcciones",
-  "Mis Tarjetas",
-  "Mis Cotizaciones",
 ];
 
 /*
@@ -138,99 +100,15 @@ function CategoriesDropdown({
   );
 }
 
-function AccountMenu({
-  user,
-  items,
-  onSelect,
-  onLogout,
-}: {
-  user: HeaderUser;
-  items: AccountItem[];
-  onSelect: (item: AccountItem) => void;
-  onLogout: () => void;
-}) {
-  return (
-    <div
-      role="menu"
-      aria-label="Mi cuenta"
-      className={cn(
-        panelSurface,
-        panelAnchor,
-        "right-0 w-[300px] overflow-hidden pb-2",
-      )}
-    >
-      <div className="flex items-center gap-3 border-b border-neutral-100 p-4">
-        <span
-          aria-hidden="true"
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-anchor text-body-m font-bold text-primary-foreground"
-        >
-          {user.initials}
-        </span>
-        <span>
-          <span className="block text-body-m font-bold text-foreground">
-            Bienvenido, {user.name}
-          </span>
-          <span className="block text-caption text-muted-foreground">
-            {user.company}
-          </span>
-        </span>
-      </div>
-
-      <ul className="m-0 list-none py-1">
-        {items.map((item) => (
-          <li key={item.label}>
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => onSelect(item)}
-              className="text-body-m flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-left text-foreground hover:bg-muted"
-            >
-              <Icon
-                name={item.icon}
-                size={18}
-                className="shrink-0 text-muted-foreground"
-              />
-              <span className="flex-1">{item.label}</span>
-              {item.value && (
-                <span
-                  className={cn(
-                    "font-bold",
-                    item.tone === "success"
-                      ? "text-success"
-                      : "text-brand-anchor",
-                  )}
-                >
-                  {item.value}
-                </span>
-              )}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        type="button"
-        onClick={onLogout}
-        className="text-body-m mt-1 flex w-full cursor-pointer items-center gap-3 border-t border-neutral-100 px-4 py-3 text-left font-semibold text-text-link hover:bg-muted"
-      >
-        <Icon name="log-out" size={18} />
-        Cerrar sesión
-      </button>
-    </div>
-  );
-}
-
 function MobileDrawer({
   categories,
-  accountLinks,
+  accountSlot,
   onSelect,
-  onLogout,
   onClose,
 }: {
   categories: string[];
-  accountLinks: string[];
+  accountSlot: React.ReactNode;
   onSelect: (label: string) => void;
-  onLogout: () => void;
   onClose: () => void;
 }) {
   return (
@@ -271,25 +149,7 @@ function MobileDrawer({
 
         <div className="my-2 border-t border-neutral-100" />
 
-        <nav className="flex flex-col py-2">
-          {accountLinks.map((link) => (
-            <button
-              key={link}
-              type="button"
-              onClick={() => onSelect(link)}
-              className="cursor-pointer py-3 text-left text-base font-semibold text-foreground"
-            >
-              {link}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={onLogout}
-            className="cursor-pointer py-3 text-left text-base font-semibold text-text-link"
-          >
-            Cerrar sesión
-          </button>
-        </nav>
+        <nav className="flex flex-col py-2">{accountSlot}</nav>
       </div>
     </div>
   );
@@ -301,18 +161,33 @@ function MobileDrawer({
   The panel keys the header owns. `usePanel` takes any string to stay general,
   so this alias is what keeps a typo a compile error rather than a panel that
   silently never opens.
+
+  "account" is deliberately NOT here: `account-menu.tsx` owns that key now,
+  through its own `usePanel("account")`. It still shares this header's
+  `<PanelGroup>` — that is what keeps the account panel closing when the
+  cart opens — but the key is declared where it is used, not here.
 */
-type HeaderPanel = "categories" | "account" | "cart";
+type HeaderPanel = "categories" | "cart";
 
 const useHeaderPanel = (panel: HeaderPanel) => usePanel(panel);
 
 type HeaderProps = {
   categories?: string[];
-  user?: HeaderUser;
-  accountItems?: AccountItem[];
-  drawerLinks?: string[];
   /** Mark drawn inside a pill — the store currently being compared against. */
   activeStore?: StoreMark["name"];
+  /**
+   * The account trigger, rendered elsewhere and handed in as an element.
+   *
+   * It arrives as a slot rather than an import because this file is a Client
+   * Component: importing the Server Component that reads the customer
+   * session would drag the Magento endpoint and the session cookie into the
+   * client bundle, which is exactly what the split exists to prevent.
+   * Already-rendered output, on the other hand, is just serializable data
+   * and crosses the boundary freely.
+   */
+  accountSlot?: React.ReactNode;
+  /** Same reasoning as `accountSlot`, for the mobile drawer's account section. */
+  drawerAccountSlot?: React.ReactNode;
   /**
    * The cart, rendered elsewhere and handed in as an element.
    *
@@ -347,17 +222,15 @@ export function Header(props: HeaderProps) {
 
 function HeaderBody({
   categories = defaultCategories,
-  user = defaultUser,
-  accountItems = defaultAccountItems,
-  drawerLinks = defaultDrawerLinks,
   activeStore = "amazon",
+  accountSlot,
+  drawerAccountSlot,
   cartSlot,
   onSearch,
   onSelectCategory,
 }: HeaderProps) {
   const [query, setQuery] = React.useState("");
   const categoriesPanel = useHeaderPanel("categories");
-  const accountPanel = useHeaderPanel("account");
 
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -469,31 +342,13 @@ function HeaderBody({
           aria-label="Cuenta y carrito"
           className="relative order-3 flex items-center gap-4 lg:order-none lg:col-span-3 lg:justify-end lg:gap-6"
         >
-          <button
-            type="button"
-            aria-haspopup="menu"
-            aria-expanded={accountPanel.isOpen}
-            onClick={accountPanel.toggle}
-            className="text-body-m inline-flex cursor-pointer items-center gap-2 text-foreground"
-          >
-            <Icon name="user" size={20} />
-            <span className="hidden lg:inline">Mi cuenta</span>
-          </button>
+          {accountSlot}
 
           {/*
             The slot sits inside this <nav> so the cart panel anchors to the
             same positioned ancestor the account menu does.
           */}
           {cartSlot}
-
-          {accountPanel.isOpen && (
-            <AccountMenu
-              user={user}
-              items={accountItems}
-              onSelect={accountPanel.close}
-              onLogout={accountPanel.close}
-            />
-          )}
         </nav>
       </Container>
 
@@ -517,9 +372,8 @@ function HeaderBody({
       {categoriesPanel.isOpen && (
         <MobileDrawer
           categories={categories}
-          accountLinks={drawerLinks}
+          accountSlot={drawerAccountSlot}
           onSelect={selectCategory}
-          onLogout={categoriesPanel.close}
           onClose={categoriesPanel.close}
         />
       )}

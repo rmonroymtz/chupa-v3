@@ -145,3 +145,41 @@ export type CartResult = { cart: Cart | null };
 export type UpdateCartItemsResult = {
   updateCartItems: { cart: Cart } | null;
 };
+
+/*
+  `customerCart` and `mergeCarts` both resolve to a non-null `Cart!` in the
+  schema — unlike `addProductsToCart`, there is no payload wrapper and no
+  `user_errors` channel here. A failure on either arrives only as a top-level
+  GraphQL error, already turned into a GraphQLResponseError by the transport.
+*/
+export type CustomerCartResult = { customerCart: Cart };
+export type MergeCartsResult = { mergeCarts: Cart };
+
+// ── Customer ─────────────────────────────────────────────────────────────────
+
+export type GenerateCustomerTokenResult = {
+  generateCustomerToken: { token: string } | null;
+};
+
+export type RevokeCustomerTokenResult = {
+  revokeCustomerToken: { result: boolean } | null;
+};
+
+/*
+  Magento core has no `company` field on Customer itself — company lives on
+  the address book, so the default billing address is where a B2B account
+  name actually comes from.
+*/
+export type CustomerAddress = {
+  company: string | null;
+  default_billing: boolean | null;
+};
+
+export type Customer = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  addresses: CustomerAddress[] | null;
+};
+
+export type CustomerResult = { customer: Customer | null };

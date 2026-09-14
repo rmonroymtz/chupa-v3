@@ -1,7 +1,7 @@
 import { CartMenu } from "@/components/cart/cart-menu";
 import { Icon } from "@/components/icons";
 import type { MiniCartLine } from "@/components/cart/mini-cart";
-import { readCartId } from "@/lib/data/cookies";
+import { readCartId, readCustomerToken } from "@/lib/data/cookies";
 import { getCart } from "@/lib/magento/cart";
 import { productPath } from "@/lib/magento/urls";
 import type { Cart } from "@/lib/magento/types";
@@ -57,7 +57,15 @@ export async function CartData() {
   let cart: Cart | null = null;
 
   try {
-    cart = await getCart(cartId);
+    /*
+      After a sign-in, `cp_cart_id` holds a customer cart (see
+      `adoptGuestCart`), and Magento refuses to read a customer cart without
+      its token — 200 with a top-level `graphql-authorization` error.
+      Without forwarding it here, the mini-cart would go empty for every
+      signed-in shopper on the very next render.
+    */
+    const token = await readCustomerToken();
+    cart = await getCart(cartId, token ?? undefined);
   } catch (error) {
     /*
       This renders in the root layout, so a Magento outage would otherwise

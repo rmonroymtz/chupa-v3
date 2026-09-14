@@ -2,11 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 
-import { readCartId, writeCartId } from "@/lib/data/cookies";
+import { readCartId, readCustomerToken, writeCartId } from "@/lib/data/cookies";
 import {
   AddToCartError,
   addProductsToCart,
   createEmptyCart,
+  getCustomerCart,
   updateCartItems,
 } from "@/lib/magento/cart";
 
@@ -29,7 +30,25 @@ function refreshCart() {
   revalidatePath("/", "layout");
 }
 
-async function requireCartId(): Promise<string> {
+/*
+  Once `cp_cart_id` has adopted a customer cart (see `adoptGuestCart` in
+  `@/lib/data/cart-session`), Magento rejects any read or write of that cart
+  that does not carry the customer's token — a 200 with a top-level
+  `graphql-authorization` error. So every action below reads the token once,
+  up front, and forwards it to Magento on every cart call it makes.
+*/
+async function requireCartId(token: string | null): Promise<string> {
+  if (token) {
+    /*
+      `customerCart` is the documented way to reach a signed-in customer's
+      cart, and it creates one on demand — same as `createEmptyCart` does for
+      a guest. So the lazy-mint branch below only ever applies to guests; a
+      customer always has a cart, whether or not they have added anything yet.
+    */
+    const cart = await getCustomerCart(token);
+    return cart.id;
+  }
+
   const existing = await readCartId();
 
   if (existing) return existing;
@@ -44,21 +63,27 @@ export async function addSkuToCart(
   quantity = 1,
 ): Promise<CartActionResult> {
   try {
-    const cartId = await requireCartId();
+    const token = await readCustomerToken();
+    const cartId = await requireCartId(token);
 
     try {
-      await addProductsToCart({ cartId, cartItems: [{ sku, quantity }] });
+      await addProductsToCart({
+        cartId,
+        cartItems: [{ sku, quantity }],
+        token: token ?? undefined,
+      });
     } catch (error) {
       /*
         The cookie pointed at a cart Magento no longer has. That is not the
         shopper's problem: mint a fresh cart and replay the add once.
       */
       if (error instanceof AddToCartError && error.isStaleCart) {
-        const replacement = await createEmptyCart();
+        const replacement = await createEmptyCart(token ?? undefined);
         await writeCartId(replacement);
         await addProductsToCart({
           cartId: replacement,
           cartItems: [{ sku, quantity }],
+          token: token ?? undefined,
         });
       } else {
         throw error;
@@ -77,6 +102,7 @@ export async function setCartItemQuantity(
   quantity: number,
 ): Promise<CartActionResult> {
   try {
+    const token = await readCustomerToken();
     const cartId = await readCartId();
 
     if (!cartId) {
@@ -87,6 +113,7 @@ export async function setCartItemQuantity(
     await updateCartItems({
       cartId,
       items: [{ cart_item_uid: itemUid, quantity: Math.max(0, quantity) }],
+      token: token ?? undefined,
     });
 
     refreshCart();
